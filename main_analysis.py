@@ -59,16 +59,11 @@ category_sales = (
 print("\nCategory-wise Total Sales:")
 print(category_sales)
 
-# -----------------------------
-# Bar Chart: Category-wise Sales
-# -----------------------------
-colors = ["#4C72B0", "#55A868", "#C44E52"]
-
 plt.figure(figsize=(8, 5))
 bars = plt.bar(
     category_sales["Category"],
     category_sales["Sales"],
-    color=colors
+    color=["#4C72B0", "#55A868", "#C44E52"]
 )
 
 plt.title("Total Sales by Product Category", fontsize=14)
@@ -76,7 +71,6 @@ plt.xlabel("Category", fontsize=11)
 plt.ylabel("Total Sales", fontsize=11)
 plt.grid(axis="y", linestyle="--", alpha=0.6)
 
-# Add value labels on bars
 for bar in bars:
     height = bar.get_height()
     plt.text(
@@ -85,6 +79,46 @@ for bar in bars:
         f"{height:,.0f}",
         ha="center",
         va="bottom",
+        fontsize=10
+    )
+
+plt.tight_layout()
+plt.show()
+
+# -----------------------------
+# Region-wise Sales Analysis
+# -----------------------------
+region_sales = (
+    df.groupby("Region")["Sales"]
+    .sum()
+    .reset_index()
+    .sort_values("Sales", ascending=True)
+)
+
+print("\nRegion-wise Total Sales:")
+print(region_sales)
+
+# Horizontal bar chart for regions
+plt.figure(figsize=(9, 5))
+bars = plt.barh(
+    region_sales["Region"],
+    region_sales["Sales"],
+    color="#8172B2"
+)
+
+plt.title("Total Sales by Region", fontsize=14)
+plt.xlabel("Total Sales", fontsize=11)
+plt.ylabel("Region", fontsize=11)
+plt.grid(axis="x", linestyle="--", alpha=0.6)
+
+# Add value labels
+for bar in bars:
+    width = bar.get_width()
+    plt.text(
+        width,
+        bar.get_y() + bar.get_height() / 2,
+        f"{width:,.0f}",
+        va="center",
         fontsize=10
     )
 
