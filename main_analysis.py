@@ -6,14 +6,17 @@ df = pd.read_csv("data/train.csv")
 # Convert Order Date to datetime
 df["Order Date"] = pd.to_datetime(df["Order Date"], errors="coerce")
 
-print("Rows before removing missing dates:", df.shape[0])
-
-# Remove rows with missing Order Date
+# Remove rows with missing dates
 df = df.dropna(subset=["Order Date"])
 
-print("Rows after removing missing dates:", df.shape[0])
+# Extract Year and Month
+df["Year"] = df["Order Date"].dt.year
+df["Month"] = df["Order Date"].dt.month
 
-# Verify date range
-print("\nDate range after cleaning:")
-print("Min date:", df["Order Date"].min())
-print("Max date:", df["Order Date"].max())
+# Verify extraction
+print("Year-Month extraction check:")
+print(df[["Order Date", "Year", "Month"]].head())
+
+# Basic sanity check
+print("\nUnique years:", sorted(df["Year"].unique()))
+print("Unique months:", sorted(df["Month"].unique()))
