@@ -28,9 +28,7 @@ monthly_sales["YearMonth"] = pd.to_datetime(
 
 monthly_sales = monthly_sales.sort_values("YearMonth")
 
-# -----------------------------
-# Line Chart: Monthly Sales Trend
-# -----------------------------
+# Line chart: Monthly sales trend
 plt.figure(figsize=(11, 5))
 plt.plot(
     monthly_sales["YearMonth"],
@@ -38,7 +36,6 @@ plt.plot(
     linewidth=2.5,
     marker="o"
 )
-
 plt.title("Monthly Sales Trend (2015–2018)", fontsize=14)
 plt.xlabel("Time", fontsize=11)
 plt.ylabel("Total Sales", fontsize=11)
@@ -55,9 +52,6 @@ category_sales = (
     .reset_index()
     .sort_values("Sales", ascending=False)
 )
-
-print("\nCategory-wise Total Sales:")
-print(category_sales)
 
 plt.figure(figsize=(8, 5))
 bars = plt.bar(
@@ -95,10 +89,6 @@ region_sales = (
     .sort_values("Sales", ascending=True)
 )
 
-print("\nRegion-wise Total Sales:")
-print(region_sales)
-
-# Horizontal bar chart for regions
 plt.figure(figsize=(9, 5))
 bars = plt.barh(
     region_sales["Region"],
@@ -111,7 +101,47 @@ plt.xlabel("Total Sales", fontsize=11)
 plt.ylabel("Region", fontsize=11)
 plt.grid(axis="x", linestyle="--", alpha=0.6)
 
-# Add value labels
+for bar in bars:
+    width = bar.get_width()
+    plt.text(
+        width,
+        bar.get_y() + bar.get_height() / 2,
+        f"{width:,.0f}",
+        va="center",
+        fontsize=10
+    )
+
+plt.tight_layout()
+plt.show()
+
+# -----------------------------
+# Sub-Category Sales Analysis
+# -----------------------------
+subcategory_sales = (
+    df.groupby("Sub-Category")["Sales"]
+    .sum()
+    .reset_index()
+    .sort_values("Sales", ascending=False)
+)
+
+print("\nTop 10 Sub-Categories by Sales:")
+print(subcategory_sales.head(10))
+
+# Take top 10 for clear visualization
+top_subcategories = subcategory_sales.head(10)
+
+plt.figure(figsize=(10, 6))
+bars = plt.barh(
+    top_subcategories["Sub-Category"],
+    top_subcategories["Sales"],
+    color="#64B5CD"
+)
+
+plt.title("Top 10 Sub-Categories by Sales", fontsize=14)
+plt.xlabel("Total Sales", fontsize=11)
+plt.ylabel("Sub-Category", fontsize=11)
+plt.grid(axis="x", linestyle="--", alpha=0.6)
+
 for bar in bars:
     width = bar.get_width()
     plt.text(
