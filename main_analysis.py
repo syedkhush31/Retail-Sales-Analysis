@@ -13,10 +13,21 @@ df = df.dropna(subset=["Order Date"])
 df["Year"] = df["Order Date"].dt.year
 df["Month"] = df["Order Date"].dt.month
 
-# Verify extraction
-print("Year-Month extraction check:")
-print(df[["Order Date", "Year", "Month"]].head())
+# -----------------------------
+# Monthly Sales Aggregation
+# -----------------------------
+monthly_sales = (
+    df.groupby(["Year", "Month"])["Sales"]
+    .sum()
+    .reset_index()
+    .sort_values(["Year", "Month"])
+)
 
-# Basic sanity check
-print("\nUnique years:", sorted(df["Year"].unique()))
-print("Unique months:", sorted(df["Month"].unique()))
+print("Monthly Sales (first 10 rows):")
+print(monthly_sales.head(10))
+
+print("\nTop 5 months by sales:")
+print(monthly_sales.sort_values("Sales", ascending=False).head())
+
+print("\nBottom 5 months by sales:")
+print(monthly_sales.sort_values("Sales").head())
