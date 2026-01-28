@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Load dataset
 df = pd.read_csv("data/train.csv")
@@ -13,21 +14,29 @@ df = df.dropna(subset=["Order Date"])
 df["Year"] = df["Order Date"].dt.year
 df["Month"] = df["Order Date"].dt.month
 
-# -----------------------------
-# Monthly Sales Aggregation
-# -----------------------------
+# Monthly sales aggregation
 monthly_sales = (
     df.groupby(["Year", "Month"])["Sales"]
     .sum()
     .reset_index()
-    .sort_values(["Year", "Month"])
 )
 
-print("Monthly Sales (first 10 rows):")
-print(monthly_sales.head(10))
+# Create Year-Month column for plotting
+monthly_sales["YearMonth"] = pd.to_datetime(
+    monthly_sales["Year"].astype(str) + "-" +
+    monthly_sales["Month"].astype(str) + "-01"
+)
 
-print("\nTop 5 months by sales:")
-print(monthly_sales.sort_values("Sales", ascending=False).head())
+# Sort chronologically
+monthly_sales = monthly_sales.sort_values("YearMonth")
 
-print("\nBottom 5 months by sales:")
-print(monthly_sales.sort_values("Sales").head())
+# -----------------------------
+# LINE CHART: Monthly Sales Trend
+# -----------------------------
+plt.figure(figsize=(10, 5))
+plt.plot(monthly_sales["YearMonth"], monthly_sales["Sales"])
+plt.title("Monthly Sales Trend Over Time")
+plt.xlabel("Time")
+plt.ylabel("Total Sales")
+plt.tight_layout()
+plt.show()
